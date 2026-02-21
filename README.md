@@ -5,6 +5,8 @@ Status: Standards-Grade Draft Suite
 
 ---
 
+![title](assets/harp-dark.png)
+
 ## Overview
 
 HARP (Human Authorization & Review Protocol) is a cryptographically verifiable authorization and control layer for AI coding agents and autonomous development tools.
@@ -266,4 +268,3 @@ Implementers MUST strictly follow normative requirements and pass compliance tes
 
 Specification text may be released under an open documentation license (e.g., CC BY 4.0).  
 Reference implementations may use appropriate open-source licenses.
-
