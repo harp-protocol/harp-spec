@@ -43,6 +43,13 @@ The repository is organized according to protocol layers and governance boundari
     Session schemas
     Session test vectors
 
+/gateway
+    HARP-GATEWAY RFC Draft specification
+    HARP-GATEWAY HTTP Binding specification
+    Gateway schemas
+    Gateway test vectors
+    Gateway examples
+
 /infrastructure
     HARP-TRANSPORT specification
     HARP-KEYMGMT specification
@@ -100,6 +107,20 @@ Optional extension layer.
 
 ---
 
+## /gateway
+
+Defines the gateway exchange semantics and HTTP transport binding:
+
+- Artifact → Approval Request → Decision → Delivery flow
+- Envelope-mandatory framing for all payloads
+- REST, SSE, and WebSocket bindings
+- Inbox-based delivery model
+- Push notification guidance (out-of-band hints)
+
+This layer defines how HARP messages traverse the network between actors.
+
+---
+
 ## /infrastructure
 
 Defines operational and security infrastructure:
@@ -134,10 +155,11 @@ HARP is layered as follows:
 
 Layer 1 – Core Authorization  
 Layer 2 – Prompt & Session Extensions  
-Layer 3 – Transport Binding  
-Layer 4 – Key Management  
-Layer 5 – Security & Compliance  
-Layer 6 – Governance & Evolution  
+Layer 3 – Gateway Exchange Semantics  
+Layer 4 – Transport Binding  
+Layer 5 – Key Management  
+Layer 6 – Security & Compliance  
+Layer 7 – Governance & Evolution  
 
 ---
 
@@ -153,6 +175,7 @@ Layer 6 – Governance & Evolution
 - CORE
 - PROMPT
 - SESSION
+- GATEWAY
 - TRANSPORT
 - KEYMGMT
 
