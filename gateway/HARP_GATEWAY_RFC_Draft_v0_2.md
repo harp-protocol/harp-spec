@@ -74,6 +74,7 @@ An Exchange MUST be in exactly one of the following states:
 - **Decided**: Decision accepted; awaiting delivery/ack (optional).
 - **Delivered**: Decision delivered and acknowledged by Enforcer (optional but RECOMMENDED).
 - **Expired**: Exchange expired without an accepted decision.
+- **Withdrawn**: Exchange withdrawn by Enforcer before a Decision was submitted (OPTIONAL).
 - **Cancelled**: Exchange cancelled by policy or administrative action (OPTIONAL).
 
 ### 4.2 Transitions (normative)
@@ -81,6 +82,7 @@ An Exchange MUST be in exactly one of the following states:
 - Decision accepted ⇒ state becomes **Decided**.
 - Decision delivered and acknowledged ⇒ state MAY become **Delivered**.
 - Time > `expiresAt` and state is not **Decided** ⇒ state MUST become **Expired**.
+- If **Withdrawn** is implemented, Enforcer requests withdrawal while in **PendingApproval** ⇒ state becomes **Withdrawn**. Withdrawn MUST prevent accepting new Decisions and MUST remove related items from Approver Inboxes.
 - If **Cancelled** is implemented, cancellation MUST prevent accepting new decisions.
 
 ## 5. Idempotency and Conflict Rules
@@ -123,6 +125,73 @@ Approver selection MAY be:
 The selection algorithm is out of scope; the observable requirements are:
 - Approval Requests MUST be persisted to Approver Inbox(es).
 - Approval Requests MUST be deliverable over real-time channels when available.
+
+### 6.3 Metadata Forwarding Policy
+
+When the Gateway constructs an Approval Request from an Artifact submission, `body.metadata` from the submitted envelope MAY contain fields used for both **routing** and **display** purposes. The Gateway MUST apply a forwarding policy:
+
+- **Routing-only fields** (e.g., `routingToken`, `approverId`, `tenantId`) MUST NOT be forwarded into the Approval Request envelope delivered to the Approver. These fields are consumed by the Gateway for routing decisions and MUST be stripped.
+- **Display-safe fields** (e.g., `workspaceName`, `repoName`) SHOULD be forwarded into the Approval Request body so that the Approver application can present contextual information to the human reviewer.
+- If no display-safe fields are present, the Gateway MAY omit `metadata` from the Approval Request body entirely.
+
+> **Rationale:** Per HARP-CORE Appendix A, `repoRef` SHOULD be kept opaque to avoid leaking repository URLs to the Gateway. Display-safe metadata uses human-friendly labels (e.g., `"airlock"`) rather than full paths or URLs, preserving this guidance while enabling useful presentation in Approver applications.
+
+### 6.4 Well-Known Metadata Keys
+
+The following metadata keys are defined for interoperability. Implementations MAY define additional keys.
+
+| Key | Classification | Description |
+|---|---|---|
+| `routingToken` | Routing | Opaque token for zero-knowledge approver selection. MUST NOT be forwarded. |
+| `approverId` | Routing | Explicit approver address (backward-compatible fallback). MUST NOT be forwarded. |
+| `tenantId` | Routing | Tenant scope for multi-tenant deployments. MUST NOT be forwarded. |
+| `workspaceName` | Display | Human-friendly workspace/project label (e.g., `"airlock"`). SHOULD be forwarded. |
+| `repoName` | Display | Human-friendly repository identifier. SHOULD be forwarded. |
+
+### 6.5 Enforcer Presence
+
+The Gateway MAY track the **presence** (connectivity status) of connected Enforcers to provide operational visibility to Approver applications.
+
+#### 6.5.1 Presence States
+
+- **Online**: At least one active real-time channel (WebSocket or SSE) exists for the enforcerId.
+- **Offline**: No active channel; last activity exceeds the presence TTL.
+
+#### 6.5.2 Presence Records
+
+Presence records MAY include:
+
+| Field | Requirement | Description |
+|---|---|---|
+| `enforcerDeviceId` | REQUIRED | Unique identifier for the enforcer instance |
+| `status` | REQUIRED | `online` or `offline` |
+| `lastSeenAt` | RECOMMENDED | RFC3339 timestamp of last activity |
+| `transport` | OPTIONAL | `websocket`, `sse`, or `poll` |
+| `workspaceName` | OPTIONAL | Human-friendly workspace/project label |
+| `enforcerLabel` | OPTIONAL | Human-friendly enforcer type label |
+| `capabilities` | OPTIONAL | Object describing enforcer capabilities |
+
+#### 6.5.3 Presence Semantics
+
+- Presence is **best-effort** and informational. It MUST NOT affect routing correctness — Decisions MUST be deliverable regardless of presence status (via inbox/poll fallback per §7.1).
+- Presence records SHOULD expire automatically after a configurable TTL (RECOMMENDED: 10 minutes) if no keepalive or messages are received.
+- The Gateway SHOULD update presence on WebSocket connect/disconnect and on receipt of keepalive messages.
+
+### 6.6 Pairing
+
+The Gateway SHOULD support a **pairing** mechanism that establishes a trust relationship between an Enforcer and an Approver. Pairing enables:
+
+- Opaque routing token generation (for zero-knowledge approver selection per §2.1)
+- Enforcer identity metadata exchange (enforcerLabel, workspace context)
+- Key exchange for end-to-end encryption
+
+The pairing lifecycle consists of:
+
+1. **Initiation**: One party generates a short-lived pairing code.
+2. **Resolution**: The other party resolves the code to obtain session details.
+3. **Completion**: Both parties confirm, establishing the routing token and shared context.
+
+Pairing sessions MUST be short-lived (RECOMMENDED: 10 minutes) and single-use.
 
 ## 7. Delivery Guarantees and Acknowledgements
 

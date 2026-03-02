@@ -158,6 +158,54 @@ Failure condition:
 
 ---
 
+## 2.9 Gateway Metadata Forwarding Tests
+
+- Verify routing-only metadata keys (`routingToken`, `approverId`, `tenantId`) are stripped from Approval Request envelopes (HARP-GW §6.3).
+- Verify display-safe metadata keys (`workspaceName`, `repoName`) are forwarded into Approval Request body.
+- Verify that if no display-safe fields are present, metadata MAY be omitted entirely.
+
+Failure condition:
+- Routing-only metadata present in delivered Approval Request.
+
+---
+
+## 2.10 Exchange Withdraw Tests
+
+- Verify withdrawal of a PendingApproval exchange transitions to Withdrawn state.
+- Verify withdrawal is rejected (409 Conflict) for exchanges in terminal states (Decided, Expired, Withdrawn).
+- Verify related Approver inbox items are removed upon withdrawal.
+
+Failure condition:
+- Withdrawal accepted for terminal-state exchange.
+- Inbox items remain after successful withdrawal.
+
+---
+
+## 2.11 Presence Tests
+
+- Verify online/offline presence transitions on WebSocket connect/disconnect.
+- Verify presence TTL-based automatic expiry.
+- Verify hello message initializes presence record with capabilities and metadata.
+- Verify presence does not affect routing correctness.
+
+Failure condition:
+- Presence status affects Decision delivery.
+
+---
+
+## 2.12 Pairing Tests
+
+- Verify pairing code expiry after TTL (RECOMMENDED: 10 minutes).
+- Verify single-use enforcement (reject second use of same code).
+- Verify routing token generation upon successful pairing.
+- Verify 409 Conflict on double-complete.
+
+Failure condition:
+- Pairing code reuse accepted.
+- Routing token generated for expired session.
+
+---
+
 # 3. Negative Testing Requirements
 
 Implementations MUST include negative tests for:

@@ -17,6 +17,10 @@
       "kind": "inline",
       "data": "BASE64_CIPHERTEXT_PLACEHOLDER"
     },
+    "metadata": {
+      "workspaceName": "airlock",
+      "repoName": "harp-spec"
+    },
     "policyHint": {
       "ui": "Approve or Reject"
     }

@@ -20,6 +20,7 @@
         "decided",
         "delivered",
         "expired",
+        "withdrawn",
         "cancelled"
       ]
     },

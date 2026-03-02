@@ -156,15 +156,22 @@ Residual risk:
 Threat:
 - Gateway inspects artifact content.
 - Transport leakage.
+- Metadata forwarding misconfiguration leaks routing-only metadata (e.g., `routingToken`, `approverId`) to Approver (see HARP-GW §6.3).
+- Presence records expose enforcer connectivity patterns, workspace names, and capabilities.
+- Pairing flow reveals enforcer identity and public keys during code resolution.
 
 Mitigation:
 - Zero-knowledge compatibility
 - Optional E2E encryption
 - TLS enforcement
+- Gateway MUST strip routing-only metadata before forwarding (HARP-GW §6.3)
+- Presence endpoints MUST be scoped by tenant and authenticated
+- Pairing codes MUST be short-lived and single-use
 
 Residual risk:
-- Metadata leakage
+- Metadata leakage through display-safe fields (workspace structure inference)
 - Traffic analysis
+- Presence observation by authenticated tenant members
 
 ---
 
@@ -173,11 +180,15 @@ Residual risk:
 Threat:
 - Flooding artifact or prompt submissions.
 - Replay attempts.
+- Presence endpoint flooding.
+- Pairing code brute-force attempts.
 
 Mitigation:
 - Rate limiting
 - Idempotency enforcement
 - Replay cache
+- Pairing codes with sufficient entropy (RECOMMENDED: 6+ alphanumeric characters)
+- Presence TTL-based automatic expiry
 
 Residual risk:
 - Large-scale distributed attacks
@@ -227,12 +238,18 @@ Risks:
 - Message reordering
 - Message dropping
 - Metadata observation
+- Metadata forwarding misconfiguration (routing-only fields leaked to Approver)
+- Pairing session hijacking (attacker intercepts pairing code)
+- Presence metadata observation (enforcer connectivity patterns)
 
 Mitigations:
 - Signature validation at HE
 - Idempotency
 - Replay protection
 - Optional E2E encryption
+- Gateway MUST strip routing-only metadata per HARP-GW §6.3
+- Pairing sessions MUST be short-lived and single-use per HARP-GW §6.6
+- Presence endpoints MUST be tenant-scoped and authenticated
 
 ---
 

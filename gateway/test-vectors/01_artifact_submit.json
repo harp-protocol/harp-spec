@@ -13,7 +13,9 @@
       "data": "BASE64_CIPHERTEXT_PLACEHOLDER"
     },
     "metadata": {
-      "hint": "opaque"
+      "routingToken": "rt-opaque-abc123",
+      "workspaceName": "airlock",
+      "repoName": "harp-spec"
     },
     "expiresAt": "2026-02-24T10:10:00Z"
   }

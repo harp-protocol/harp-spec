@@ -164,6 +164,51 @@ extensions.harp.*
 
 ---
 
+## 3.5 Metadata Key Registry
+
+Maintains well-known metadata keys used in gateway envelope `body.metadata` for routing and display purposes (see HARP-GW §6.4).
+
+Initial entries:
+
+| Key | Classification |
+|---|---|
+| `routingToken` | Routing |
+| `approverId` | Routing |
+| `tenantId` | Routing |
+| `workspaceName` | Display |
+| `repoName` | Display |
+
+Implementations MAY define additional keys. New well-known keys require governance approval.
+
+---
+
+## 3.6 Message Type Registry
+
+Maintains valid `msgType` values used in HARP Envelopes and WebSocket control messages.
+
+Initial entries:
+
+| msgType | Direction | Defined in |
+|---|---|---|
+| `artifact.submit` | Client → Gateway | HARP-GW HTTP Binding |
+| `artifact.accepted` | Gateway → Client | HARP-GW HTTP Binding |
+| `decision.submit` | Client → Gateway | HARP-GW HTTP Binding |
+| `decision.accepted` | Gateway → Client | HARP-GW HTTP Binding |
+| `decision.deliver` | Gateway → Client | HARP-GW HTTP Binding |
+| `approval.request` | Gateway → Client | HARP-GW HTTP Binding |
+| `ack.submit` | Client → Gateway | HARP-GW HTTP Binding |
+| `ack.accepted` | Gateway → Client | HARP-GW HTTP Binding |
+| `inbox.page` | Gateway → Client | HARP-GW HTTP Binding |
+| `exchange.status` | Gateway → Client | HARP-GW HTTP Binding |
+| `exchange.withdrawn` | Gateway → Client | HARP-GW HTTP Binding |
+| `refresh.request` | Gateway → Client | HARP-GW HTTP Binding |
+| `hello` | Client → Gateway | HARP-GW HTTP Binding (WS control) |
+| `error` | Gateway → Client | HARP-GW HTTP Binding |
+
+New message types require governance approval.
+
+---
+
 # 4. Change Control Process
 
 ## 4.1 Proposal Lifecycle

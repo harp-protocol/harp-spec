@@ -53,6 +53,8 @@ Content-Type: application/harp+json
 
 Envelope-based transport MUST wrap payloads using the HARP-CORE Envelope schema.
 
+**Note:** The HARP-GW HTTP Binding (see `HARP_GATEWAY_HTTP_BINDING_v0_2.md`) defines WebSocket control messages (e.g., `hello`) that are NOT Envelopes. These are bare JSON objects used for connection initialization. Additionally, the Gateway binding defines an extended endpoint set beyond the generic endpoints listed in §4.1 below (e.g., presence, pairing, withdraw, refresh).
+
 ---
 
 ## 4. HTTP Binding
