@@ -131,7 +131,7 @@ The selection algorithm is out of scope; the observable requirements are:
 When the Gateway constructs an Approval Request from an Artifact submission, `body.metadata` from the submitted envelope MAY contain fields used for both **routing** and **display** purposes. The Gateway MUST apply a forwarding policy:
 
 - **Routing-only fields** (e.g., `routingToken`, `approverId`, `tenantId`) MUST NOT be forwarded into the Approval Request envelope delivered to the Approver. These fields are consumed by the Gateway for routing decisions and MUST be stripped.
-- **Display-safe fields** (e.g., `workspaceName`, `repoName`) SHOULD be forwarded into the Approval Request body so that the Approver application can present contextual information to the human reviewer.
+- **Display-safe fields** (e.g., `workspaceName`, `repoName`, `requestLabel`) SHOULD be forwarded into the Approval Request body so that the Approver application can present contextual information to the human reviewer.
 - If no display-safe fields are present, the Gateway MAY omit `metadata` from the Approval Request body entirely.
 
 > **Rationale:** Per HARP-CORE Appendix A, `repoRef` SHOULD be kept opaque to avoid leaking repository URLs to the Gateway. Display-safe metadata uses human-friendly labels (e.g., `"airlock"`) rather than full paths or URLs, preserving this guidance while enabling useful presentation in Approver applications.
@@ -147,6 +147,7 @@ The following metadata keys are defined for interoperability. Implementations MA
 | `tenantId` | Routing | Tenant scope for multi-tenant deployments. MUST NOT be forwarded. |
 | `workspaceName` | Display | Human-friendly workspace/project label (e.g., `"airlock"`). SHOULD be forwarded. |
 | `repoName` | Display | Human-friendly repository identifier. SHOULD be forwarded. |
+| `requestLabel` | Display | Human-friendly label describing the review trigger (e.g., `"Pre Tool Use"`, `"Terminal Command"`). SHOULD be forwarded. |
 
 ### 6.5 Enforcer Presence
 

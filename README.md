@@ -59,6 +59,10 @@ The repository is organized according to protocol layers and governance boundari
 /governance
     HARP-GOVERNANCE specification
 
+/requested-actions
+    HARP-REQUESTED-ACTIONS extension specification
+    Extension schema
+
 README.md
 ```
 
@@ -131,6 +135,18 @@ Defines operational and security infrastructure:
 - HARP-COMPLIANCE (conformance & interoperability testing)
 
 These documents define deployment and enterprise requirements.
+
+---
+
+## /requested-actions
+
+Defines the Requested Actions extension:
+
+- Custom approver UI action buttons in place of default Approve / Reject
+- Actions map to HARP Core decisions (`allow` / `deny`)
+- Captions and styles are presentation hints only
+
+Optional extension layer. Backward-compatible — implementations that do not recognize it fall back to default buttons.
 
 ---
 
