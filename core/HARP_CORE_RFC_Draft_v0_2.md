@@ -220,8 +220,8 @@ States:
 
 Transitions:
 - CREATED -> AWAITING_DECISION (artifact submitted)
-- AWAITING_DECISION -> APPROVED (valid allow Decision)
-- AWAITING_DECISION -> DENIED (valid deny Decision)
+- AWAITING_DECISION -> APPROVED (valid approve Decision)
+- AWAITING_DECISION -> DENIED (valid reject Decision)
 - AWAITING_DECISION -> EXPIRED (artifact expires)
 - APPROVED -> EXECUTED (action executed once per scope rules)
 - APPROVED -> EXPIRED (Decision expires before execution)

@@ -37,8 +37,8 @@
     "decision": {
       "type": "string",
       "enum": [
-        "allow",
-        "deny"
+        "approve",
+        "reject"
       ]
     },
     "scope": {

@@ -46,7 +46,7 @@
         },
         "decision": {
           "type": "string",
-          "enum": ["allow", "deny"],
+          "enum": ["approve", "reject"],
           "description": "HARP Core decision mapping."
         }
       }

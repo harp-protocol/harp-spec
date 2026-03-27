@@ -62,7 +62,7 @@ Implementations MUST reproduce the exact byte sequences shown below.
 ### DecisionSignable canonical JSON
 
 ```text
-{"artifactHash":"8e326e1f69e5859a3b5b12965f06b5829f09b12d1748aa2fddb609fb44f831c1","artifactHashAlg":"SHA-256","decision":"allow","expiresAt":"2026-02-21T12:05:00Z","nonce":"bm9uY2UtMDAx","repoRef":"repo:acme/widgets","requestId":"01J2V8V3K6B2Z9X6G1V7Y2QK8H","scope":"once","sigAlg":"Ed25519","signerKeyId":"ma-key-01"}
+{"artifactHash":"8e326e1f69e5859a3b5b12965f06b5829f09b12d1748aa2fddb609fb44f831c1","artifactHashAlg":"SHA-256","decision":"approve","expiresAt":"2026-02-21T12:05:00Z","nonce":"bm9uY2UtMDAx","repoRef":"repo:acme/widgets","requestId":"01J2V8V3K6B2Z9X6G1V7Y2QK8H","scope":"once","sigAlg":"Ed25519","signerKeyId":"ma-key-01"}
 ```
 
 ### Signature (raw, base64url)

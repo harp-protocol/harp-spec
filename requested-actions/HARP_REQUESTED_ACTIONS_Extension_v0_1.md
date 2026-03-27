@@ -1,8 +1,8 @@
-# HARP Extension: Requested Actions — v0.1
+# HARP-REQUESTED-ACTIONS — v0.2 Draft
 
 **Namespace:** `org.harp.requestedActions`
-**Status:** Draft
-**Version:** 0.1
+**Status:** Draft Specification (Extension)
+**Version:** 0.2 Draft (Standards-Grade)
 
 ---
 
@@ -10,7 +10,7 @@
 
 This extension allows an enforcer to embed a set of **requested UI actions** within a HARP artifact. The approver application renders these actions as buttons (or equivalent controls) in place of the default Approve / Reject pair.
 
-Every action maps to a strict HARP Core decision (`allow` or `deny`). Captions and styles are **presentation hints only** — they influence the UI but never change the underlying decision semantics.
+Every action maps to a strict HARP Core decision (`approve` or `reject`). Captions and styles are **presentation hints only** — they influence the UI but never change the underlying decision semantics.
 
 ---
 
@@ -20,7 +20,7 @@ Every action maps to a strict HARP Core decision (`allow` or `deny`). Captions a
 org.harp.requestedActions
 ```
 
-Placed inside the artifact plaintext's `extensions` object, which is defined in the [HARP Core Artifact Schema](../core/harp-core-artifact.schema.json).
+Placed inside the artifact plaintext's `extensions` object, which is defined in the [HARP Core Artifact Schema](../core/harp-core-artifact.schema.json) (lines 71–74).
 
 ---
 
@@ -35,13 +35,13 @@ Placed inside the artifact plaintext's `extensions` object, which is defined in 
         "id": "approve",
         "caption": "Approve",
         "style": "primary",
-        "decision": "allow"
+        "decision": "approve"
       },
       {
         "id": "reject",
         "caption": "Reject",
         "style": "danger",
-        "decision": "deny"
+        "decision": "reject"
       }
     ]
   }
@@ -52,12 +52,12 @@ Placed inside the artifact plaintext's `extensions` object, which is defined in 
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `version` | integer | Yes | Extension schema version. Must be `1`. |
-| `actions` | array | Yes | Ordered list of action items. |
-| `actions[].id` | string | Yes | Unique identifier within this extension instance (case-insensitive). |
-| `actions[].caption` | string | Yes | Human-readable button label. Non-empty, trimmed. |
-| `actions[].style` | string | No | Visual hint: `"primary"`, `"secondary"`, `"danger"`. Defaults to `"secondary"`. Unknown values normalize to `"secondary"`. |
-| `actions[].decision` | string | Yes | HARP Core decision: `"allow"` or `"deny"`. |
+| `version` | integer | ✅ | Extension schema version. Must be `1`. |
+| `actions` | array | ✅ | Ordered list of action items. |
+| `actions[].id` | string | ✅ | Unique identifier within this extension instance (case-insensitive). |
+| `actions[].caption` | string | ✅ | Human-readable button label. Non-empty, trimmed. |
+| `actions[].style` | string | ❌ | Visual hint: `"primary"`, `"secondary"`, `"danger"`. Defaults to `"secondary"`. Unknown values normalize to `"secondary"`. |
+| `actions[].decision` | string | ✅ | HARP Core decision: `"approve"` or `"reject"`. |
 
 ---
 
@@ -67,7 +67,7 @@ Placed inside the artifact plaintext's `extensions` object, which is defined in 
 2. `actions` array MUST contain 1–5 items.
 3. Action `id` values MUST be unique (case-insensitive comparison).
 4. `caption` MUST be a non-empty string after trimming whitespace.
-5. `decision` MUST be exactly `"allow"` or `"deny"` (case-sensitive).
+5. `decision` MUST be exactly `"approve"` or `"reject"` (case-sensitive).
 6. `style` is optional. Unknown values normalize to `"secondary"` — they MUST NOT cause validation failure.
 
 If **any** validation rule fails, the entire extension MUST be ignored and the approver MUST fall back to the default Approve / Reject buttons.
@@ -89,8 +89,8 @@ Approvers MUST implement the following fallback logic:
 **Default actions** (used in all fallback cases):
 ```json
 [
-  { "id": "approve", "caption": "Approve", "style": "primary", "decision": "allow" },
-  { "id": "reject", "caption": "Reject", "style": "danger", "decision": "deny" }
+  { "id": "approve", "caption": "Approve", "style": "primary", "decision": "approve" },
+  { "id": "reject", "caption": "Reject", "style": "danger", "decision": "reject" }
 ]
 ```
 
@@ -109,10 +109,10 @@ This means:
 
 ## 7. Security Properties
 
-1. **Non-authoritative presentation**: Captions and styles are hints. The underlying decision (`allow`/`deny`) is what controls enforcement.
+1. **Non-authoritative presentation**: Captions and styles are hints. The underlying decision (`approve`/`reject`) is what controls enforcement.
 2. **Hash-bound**: Extensions are inside the encrypted, hashed artifact — tampering invalidates the hash.
 3. **Zero-knowledge gateway**: Extension data is inside the encrypted ciphertext. The gateway never sees it.
-4. **No decision escalation**: An action mapped to `deny` cannot become `allow` through the extension. The enforcer's original mapping is final.
+4. **No decision escalation**: An action mapped to `reject` cannot become `approve` through the extension. The enforcer's original mapping is final.
 
 ---
 
@@ -120,10 +120,10 @@ This means:
 
 | Enforcer | Mobile App | Result |
 |----------|-----------|--------|
-| Old (no extensions) | Old (hardcoded buttons) | Works — existing behavior |
-| Old (no extensions) | New (dynamic buttons) | Works — mobile falls back to default buttons |
-| New (with extensions) | Old (hardcoded buttons) | Works — old mobile ignores unknown JSON key |
-| New (with extensions) | New (dynamic buttons) | Works — mobile renders dynamic buttons |
+| Old (no extensions) | Old (hardcoded buttons) | ✅ Works — existing behavior |
+| Old (no extensions) | New (dynamic buttons) | ✅ Works — mobile falls back to default buttons |
+| New (with extensions) | Old (hardcoded buttons) | ✅ Works — old mobile ignores unknown JSON key |
+| New (with extensions) | New (dynamic buttons) | ✅ Works — mobile renders dynamic buttons |
 
 ---
 
@@ -136,8 +136,8 @@ This means:
   "org.harp.requestedActions": {
     "version": 1,
     "actions": [
-      { "id": "approve", "caption": "Approve", "style": "primary", "decision": "allow" },
-      { "id": "reject", "caption": "Reject", "style": "danger", "decision": "deny" }
+      { "id": "approve", "caption": "Approve", "style": "primary", "decision": "approve" },
+      { "id": "reject", "caption": "Reject", "style": "danger", "decision": "reject" }
     ]
   }
 }
@@ -150,8 +150,8 @@ This means:
   "org.harp.requestedActions": {
     "version": 1,
     "actions": [
-      { "id": "allow-once", "caption": "Allow Once", "style": "primary", "decision": "allow" },
-      { "id": "block", "caption": "Block Command", "style": "danger", "decision": "deny" }
+      { "id": "allow-once", "caption": "Allow Once", "style": "primary", "decision": "approve" },
+      { "id": "block", "caption": "Block Command", "style": "danger", "decision": "reject" }
     ]
   }
 }
@@ -164,9 +164,9 @@ This means:
   "org.harp.requestedActions": {
     "version": 1,
     "actions": [
-      { "id": "proceed", "caption": "Proceed", "style": "primary", "decision": "allow" },
-      { "id": "allow-dry-run", "caption": "Dry-Run Only", "style": "secondary", "decision": "allow" },
-      { "id": "deny-action", "caption": "Deny", "style": "danger", "decision": "deny" }
+      { "id": "proceed", "caption": "Proceed", "style": "primary", "decision": "approve" },
+      { "id": "allow-dry-run", "caption": "Dry-Run Only", "style": "secondary", "decision": "approve" },
+      { "id": "deny-action", "caption": "Deny", "style": "danger", "decision": "reject" }
     ]
   }
 }
